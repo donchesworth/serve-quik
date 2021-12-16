@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  torch_container:
+    build:
+      context: ./
+      dockerfile: ../Dockerfile
+    image: ${IMAGE_NAME}:latest
+    container_name: ${CONTAINER_NAME}
+    environment:
+      API_PORT: ${API_PORT}
+    ports:
+      - "${API_PORT}:8080"
+      - "${METRIC_PORT}:8082"
+    env_file:
+      - ./.env

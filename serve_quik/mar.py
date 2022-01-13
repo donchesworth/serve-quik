@@ -98,7 +98,8 @@ def save_env_file(
     serve_path: Path,
     project_name: str,
     api_port: int,
-    metric_port: int):
+    metric_port: int,
+):
     """Create a .env file with args for docker-compose
 
     Args:

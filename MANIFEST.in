@@ -1,2 +1,3 @@
-recursive-include mar_files *
+recursive-include serve_quik/handler *
 recursive-include serve_quik/container *
+recursive-exclude deployments/*

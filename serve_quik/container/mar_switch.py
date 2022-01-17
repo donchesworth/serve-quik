@@ -1,24 +1,23 @@
-import os
 from pathlib import Path
 import pytorch_quik as pq
 from types import SimpleNamespace
+from serve_quik import mar
 
-BASEPATH = "/workspaces/rdp-vscode-devcontainer"
-MODELNAME = "marianmt_es_en"
-PROJECTNAME = "text-translate"
+BASEPATH = "/workspaces/rdp-vscode-devcontainer/serve-quik/deployments"
+MODELNAME = "opus-mt-es-en"
+PROJECTNAME = "test-project"
 
 
 def main():
-    args = SimpleNamespace(model_type = "marianmt")
-    serve_path = Path(f"{BASEPATH}/{PROJECTNAME}/serve/")
-    mar_input = serve_path.joinpath("mar", f"{MODELNAME}.mar")
-    serve_out = Path(f"{BASEPATH}/torch-serve/{PROJECTNAME}")
-    mar_output = serve_out.joinpath("mar")
-    mar_input.unlink(missing_ok=True)
-    mar_output.joinpath(f"{MODELNAME}.mar").unlink(missing_ok=True)
-    pq.serve.create_mar(
-        args, serve_path, MODELNAME, handler="text_trans_handler.py")
-    os.system(f"cp {mar_input} {mar_output}")
+    args = SimpleNamespace(model_type="marianmt")
+    model_dir = Path(BASEPATH, PROJECTNAME, MODELNAME)
+    # mar_input = model_dir.joinpath("mar", f"{MODELNAME}.mar")
+    # serve_out = Path(f"{BASEPATH}/torch-serve/{PROJECTNAME}")
+    # mar_output = serve_out.joinpath("mar")
+    # mar_input.unlink(missing_ok=True)
+    # mar_output.joinpath(f"{MODELNAME}.mar").unlink(missing_ok=True)
+    mar.create_mar(args, model_dir)
+    # os.system(f"cp {mar_input} {mar_output}")
 
 
 if __name__ == "__main__":

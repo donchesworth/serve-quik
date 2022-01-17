@@ -3,7 +3,7 @@ services:
   torch_container:
     build:
       context: ./
-      dockerfile: ../Dockerfile
+      dockerfile: ${CONTAINER_DIR}/Dockerfile
     image: ${IMAGE_NAME}:latest
     container_name: ${CONTAINER_NAME}
     environment:

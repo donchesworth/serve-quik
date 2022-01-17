@@ -3,9 +3,8 @@ from pytorch_quik import hugging, io, utils
 from typing import List, Optional, OrderedDict, KeysView
 from argparse import Namespace
 import shlex
+import shutil
 import subprocess
-import requests
-from urllib.parse import urlparse
 import logging
 import sys
 
@@ -72,53 +71,19 @@ def save_sample(serve_path):
     io.json_write(serve_path, "sample_text.json", sample)
 
 
-def save_handler(serve_path, url: Optional[str] = None):
-    """Download the handler file for serving.
+def copy_handler(model_dir: Path, handler_path: Optional[Path] = None):
+    """Copy the handler file for serving.
 
     Args:
-        serve_path ([type]): the torch serve directory
-        url (str, optional): The url where the handler can be found.
-        Defaults to None.
+        model_dir (Path): The directory with the model files
+        handler_path (Path, optional): The location of a custom handler.
+        Defaults to None when using text_handler.py
     """
-    if url is None:
-        url = urlparse("https://raw.githubusercontent.com")
-        handler_loc = Path(
-            "donchesworth/pytorch-quik/main/",
-            "pytorch_quik",
-            "handler",
-            "transformer_handler_pq.py",
-        )
-        url = url._replace(path=str(handler_loc))
-    filename = Path(serve_path).joinpath(handler_loc.name)
-    r = requests.get(url.geturl(), allow_redirects=True)
-    open(filename, "wb").write(r.content)
-
-
-def save_env_file(
-    serve_path: Path,
-    project_name: str,
-    api_port: int,
-    metric_port: int,
-):
-    """Create a .env file with args for docker-compose
-
-    Args:
-        serve_path (Path): the torch serve directory
-        project_name (str): the project name as a base for the image
-        and container names
-        api_port (int): the host port to be paired with the serving 8080
-        mertric_port (int): the host metric port to be paired with 8082
-
-    """
-    envs = {}
-    envs["IMAGE_NAME"] = f'serve-{project_name}'
-    envs["CONTAINER_NAME"] = f'local_{project_name.replace("-", "_")}'
-    envs["API_PORT"] = api_port
-    envs["METRIC_PORT"] = metric_port
-    file = serve_path.joinpath(".env")
-    with open(file, 'w') as f:
-        for key, value in envs.items():
-            f.write(f'{key}="{value}"\n')
+    if handler_path is None:
+        handler_path = Path(__file__).parent.joinpath(
+            "handler", "text_handler.py"
+            )
+    shutil.copy(handler_path, model_dir)
 
 
 def mar_files(mar_path: Path, filelist: List[str]) -> bool:
@@ -162,13 +127,12 @@ def build_extra_files(
     save_setup_config(serve_path, indexed_labels.keys(), args)
     save_index_to_name(serve_path, indexed_labels)
     save_sample(serve_path)
-    save_handler(serve_path)
-    save_env_file(serve_path, args)
+    copy_handler(serve_path)
 
 
 def create_mar(
     args: Namespace,
-    model_dir: Optional[Path] = None,
+    model_dir: Path,
     version: Optional[float] = 1.0,
     serialized_file: Optional[str] = None,
     handler: Optional[str] = "text_handler.py",
@@ -178,36 +142,30 @@ def create_mar(
 
     Args:
         args (Namespace): the project argparse namespace.
-        model_dir (Path, optional): the directory containing
-        mar inputs, and the output directory. Defaults to None.
-        model_name (str, optional): the name of the model to be served.
-        Defaults to None.
+        model_dir (Path): the directory containing
+        mar inputs.
         version (float, optional): the model version. Defaults to 1.0.
         serialized_file (str, optional): the model output of save_pretrained().
         Defaults to None.
         handler (str, optional): the serving handler file.
         Defaults to "text_handler.py".
     """
-    if model_dir is None:
-        model_dir = Path(io.id_str("", args)).parent.joinpath("serve")
-    export_dir = model_dir.joinpath("mar")
-    export_dir.mkdir(parents=True, exist_ok=True)
+    export_dir = model_dir.parent.joinpath("mar")
+    export_dir.mkdir(exist_ok=True)
     if args.model_type in ["bert", "roberta"]:
-        files = EXTRA_FILES
+        files = EXTRA_FILES.copy()
     else:
-        files = TRANS_FILES
+        files = TRANS_FILES.copy()
     xfiles = ",./".join(shlex.quote(x) for x in files)
-    model_id = args.model_name.split('-')
-    model_id.extend(args.kwargs.values())
-    model_id = '_'.join(model_id)
     if serialized_file is None:
         serialized_file = "pytorch_model.bin"
-    handler = f"../../{handler}"
+    if handler == "text_handler.py":
+        copy_handler(model_dir)
     files.extend([serialized_file, handler])
     if mar_files(model_dir, files):
         # --model-file=./model.py
         cmd = f"""torch-model-archiver
-            --model-name={model_id}
+            --model-name={model_dir.name}
             --version={version}
             --serialized-file=./{serialized_file}
             --handler=./{handler}
@@ -216,16 +174,4 @@ def create_mar(
         """
         cm = subprocess.Popen(shlex.split(cmd), cwd=model_dir)
         cm.communicate()
-        logger.info(f"torch archive {model_id}.mar created")
-
-
-def start_container(serve_path):
-    cmd = f"""docker-compose
-        --project-directory="{serve_path.name}"
-        up
-        --detach
-    """
-    sc = subprocess.Popen(shlex.split(cmd), cwd=serve_path.parent)
-    sc.communicate()
-
-    logger.info(f"torch serve {serve_path.name} container started")
+        logger.info(f"torch archive {model_dir.name}.mar created")

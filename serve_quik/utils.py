@@ -1,7 +1,14 @@
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict
 import json
 import socket
 from pathlib import Path
+import logging
+import sys
+from pytorch_quik import hugging
+
+logging.basicConfig(stream=sys.stdout)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 BASE_API_PORT = 8080
 BASE_METRIC_PORT = 8082
@@ -18,8 +25,30 @@ def file_path():
 def set_serve_dir(project_name: str) -> Path:
     base_dir = Path(__file__).parents[1]
     serve_dir = base_dir.joinpath("deployments", project_name)
-    serve_dir.mkdir()
+    try:
+        serve_dir.mkdir()
+    except FileExistsError as e:
+        logger.info(
+            f"{e.strerror}: the {project_name} project folder "
+            "already exists. Some files will be overwritten."
+            )
     return serve_dir
+
+
+def set_model_dir(
+    serve_dir: Path, model_type: str, kwargs: Dict[str, str]
+) -> Path:
+    model_name = hugging.model_info(model_type, kwargs=kwargs)["model_name"]
+    model_name = model_name.split("/")[-1]
+    model_dir = serve_dir.joinpath(model_name)
+    try:
+        model_dir.mkdir()
+    except FileExistsError as e:
+        logger.info(
+            f"{e.strerror}: the {model_name} model folder "
+            "already exists. Some files will be overwritten."
+            )
+    return model_dir
 
 
 def txt_format(txt_arr: List[str]) -> str:

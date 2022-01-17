@@ -79,7 +79,11 @@ class TextHandler(BaseHandler, ABC):
                 model_pt_path, map_location=self.device
                 )
         elif self.setup_config["save_mode"] == "pretrained":
-            if (auto_model := self.setup_config["mode"]) in AUTO_MODELS:
+            if self.setup_config["mode"] in AUTO_MODELS:                
+                auto_model = AUTO_MODELS[self.setup_config["mode"]]
+                logger.info(f"auto_model is string: {str(auto_model)}")
+                logger.info(f"auto_model is type: {type(auto_model)}")
+                logger.info(f"auto_model is: {print(auto_model)}")
                 self.model = auto_model.from_pretrained(self.model_dir)
             else:
                 logger.warning("Missing the operation mode.")

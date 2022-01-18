@@ -1,4 +1,5 @@
 import pytorch_quik as pq
+import pandas as pd
 import numpy as np
 
 text_dict = {
@@ -16,9 +17,12 @@ text_dict = {
     ]
 }
 
+res = pd.DataFrame()
+
 for key, value in text_dict.items():
     x = np.array(value, dtype='object')
-    url = f"http://deepshadow.gsslab.rdu2.redhat.com:8280/predictions/{key}"
+    url = f"http://deepshadow.gsslab.rdu2.redhat.com:8180/predictions/{key}"
     sr = pq.api.ServeRequest(x, 2, url)
-    res = sr.batch_inference()
-    break
+    df = sr.batch_inference()
+    pd.concat([res, df])
+

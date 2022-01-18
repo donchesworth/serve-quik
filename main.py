@@ -1,8 +1,8 @@
 import pytorch_quik as pq
 from serve_quik import arg, container, mar, utils
 
-SOURCE_LANGS = ['ja', 'de', 'es', 'fr', 'bzs', 'zh', 'ko']
-
+# SOURCE_LANGS = ['ja', 'de', 'es', 'fr', 'bzs', 'zh', 'ko']
+# python main.py -p "text-translate" -mt marianmt -src ja de es -tgt en
 
 def main():
     # args = arg.parse_args([
@@ -15,8 +15,7 @@ def main():
     serve_dir = utils.set_serve_dir(args.project_name)
     container.build_dot_env(serve_dir)
 
-    for src in SOURCE_LANGS:
-        args.src = src
+    for src in args.source:
         args.kwargs['source'] = src
         model_dir = utils.set_model_dir(
             serve_dir, args.model_type, args.kwargs

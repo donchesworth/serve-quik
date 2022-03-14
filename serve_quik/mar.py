@@ -131,7 +131,7 @@ def build_extra_files(
 
 
 def create_mar(
-    args: Namespace,
+    model_type: str,
     model_dir: Path,
     version: Optional[float] = 1.0,
     serialized_file: Optional[str] = None,
@@ -141,7 +141,7 @@ def create_mar(
     https://github.com/pytorch/serve/tree/master/model-archiver
 
     Args:
-        args (Namespace): the project argparse namespace.
+        model_type (str): type of model (e.g. 'bert', 'roberta', 'marianmt')
         model_dir (Path): the directory containing
         mar inputs.
         version (float, optional): the model version. Defaults to 1.0.
@@ -152,7 +152,7 @@ def create_mar(
     """
     export_dir = model_dir.parent.joinpath("mar")
     export_dir.mkdir(exist_ok=True)
-    if args.model_type in ["bert", "roberta"]:
+    if model_type in ["bert", "roberta"]:
         files = EXTRA_FILES.copy()
     else:
         files = TRANS_FILES.copy()

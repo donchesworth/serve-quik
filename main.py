@@ -4,6 +4,7 @@ from serve_quik import arg, container, mar, utils
 # SOURCE_LANGS = ['ja', 'de', 'es', 'fr', 'bzs', 'zh', 'ko']
 # python main.py -p "text-translate" -mt marianmt -src ja de es -tgt en
 
+
 def main():
     # args = arg.parse_args([
     #     "-p", "test-project", "-mt", "marianmt", "-src", "es",
@@ -31,7 +32,7 @@ def main():
         pq.hugging.save_pretrained_model(
             model, serve_path=model_dir, state_dict=model.state_dict()
             )
-        mar.create_mar(args, model_dir)
+        mar.create_mar(args.model_type, model_dir)
 
     container.start_container(serve_dir)
 

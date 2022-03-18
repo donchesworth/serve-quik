@@ -9,7 +9,7 @@ For creating torch archived transformer models and TorchServe containers (much q
 The process of building a torch model archive, building a torch serve container, determining the appropriate ports, and testing your container can be tedious, so I tried to create an automated process for all of this. Most of my automation is centered around MarianMT models, but can be used for other models (I use it for a BERT model). For instance, to build and deploy a container with some MarianMT models that will translate from Japanese, German, and Spanish to English, you could run the following:
 
 ``` bash
-python main.py -p "text-translate" -mt marianmt -src ja de es
+python main.py -p "text-translate" -mt marianmt -src ja de es fr bzs zh ko
 ```
 
 Not only is everything set up, but the container is up and running on the server:
@@ -39,7 +39,11 @@ Now the container is up and running, to test this, you can then run:
 >>> text_dict = {
 ...     "opus-mt-ja-en": ["口は災いの元"],
 ...     "opus-mt-de-en": ["Alles hat ein Ende, nur die Wurst hat zwei"],
-...     "opus-mt-es-en": ["Es tan corto el amor y tan largo el olvido"]
+...     "opus-mt-es-en": ["Es tan corto el amor y tan largo el olvido"],
+...     "opus-mt-zh-en": [" 笑一笑,十年少"],
+...     "opus-mt-fr-en": ["Dans une grande âme tout est grand"],
+...     "opus-mt-bzs-en": ["Quando a alma fala, já não fala nada"],
+...     "opus-mt-ko-en": ["멈추지 말고 계속 해나가기만 한다면 늦어도 상관없다."],
 ... }
 >>> res = pd.DataFrame()
 >>> for key, value in text_dict.items():
@@ -51,11 +55,20 @@ Now the container is up and running, to test this, you can then run:
 ... 
 INFO:pytorch_quik.api:Batch 0, status_code: 200
 INFO:pytorch_quik.api:Batch 0, status_code: 200
+INFO:pytorch_quik.api:Batch 0, status_code: 200
+INFO:pytorch_quik.api:Batch 0, status_code: 200
+INFO:pytorch_quik.api:Batch 0, status_code: 200
+INFO:pytorch_quik.api:Batch 0, status_code: 200
+INFO:pytorch_quik.api:Batch 0, status_code: 200
 >>> print(res)
                                        translation
-0                            The mouth is a curse.              
+0                            The mouth is a curse.
 0  Everything has an end, only the sausage has two
 0       Love is so short and forgetfulness so long
+0                       Smile. Ten years is short.
+0              In a great soul everything is great
+0      When the soul speaks, there is nothing else
+0                   I don't care if it's too late.
 ```
 
 ## Process

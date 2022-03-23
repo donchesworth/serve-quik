@@ -1,4 +1,4 @@
-FROM pytorch/torchserve:0.4.2-cpu
+FROM pytorch/torchserve:0.5.3-cpu
 
 USER root
 RUN echo '\nservice_envelope=json' >> /home/model-server/config.properties && \

@@ -1,4 +1,4 @@
-import pytorch_quik as pq
+import hugging_quik as hq
 from serve_quik import arg, container, mar, utils
 
 # SOURCE_LANGS = ['ja', 'de', 'es', 'fr', 'bzs', 'zh', 'ko']
@@ -22,14 +22,14 @@ def main():
             serve_dir, args.model_type, args.kwargs
             )
         mar.save_setup_config(model_dir, args)
-        tknzr = pq.hugging.get_tokenizer(
+        tknzr = hq.token.get_tokenizer(
             args.model_type, serve_dir.joinpath("tmp"), args.kwargs
             )
-        pq.hugging.save_tokenizer(tknzr, model_dir)
-        model = pq.hugging.get_pretrained_model(
+        hq.token.save_tokenizer(tknzr, model_dir)
+        model = hq.model.get_pretrained_model(
             args.model_type, kwargs=args.kwargs
             )
-        pq.hugging.save_pretrained_model(
+        hq.model.save_pretrained_model(
             model, serve_path=model_dir, state_dict=model.state_dict()
             )
         mar.create_mar(args.model_type, model_dir)

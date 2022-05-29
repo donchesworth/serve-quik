@@ -30,7 +30,7 @@ PORTS
 Now the container is up and running, to test this, you can then run:
 
 ``` python
->>> import pytorch_quik as pq
+>>> import serve_quik as sq
 >>> import pandas as pd
 >>> import numpy as np
 >>>
@@ -49,17 +49,17 @@ Now the container is up and running, to test this, you can then run:
 >>> for key, value in text_dict.items():
 ...     x = np.array(value, dtype='object')
 ...     url = f"http://localhost:{PORT}/predictions/{key}"
-...     sr = pq.api.ServeRequest(x, 2, url)
+...     sr = sq.api.ServeRequest(x, 2, url)
 ...     df = sr.batch_inference()
 ...     res = pd.concat([res, df])
 ... 
-INFO:pytorch_quik.api:Batch 0, status_code: 200
-INFO:pytorch_quik.api:Batch 0, status_code: 200
-INFO:pytorch_quik.api:Batch 0, status_code: 200
-INFO:pytorch_quik.api:Batch 0, status_code: 200
-INFO:pytorch_quik.api:Batch 0, status_code: 200
-INFO:pytorch_quik.api:Batch 0, status_code: 200
-INFO:pytorch_quik.api:Batch 0, status_code: 200
+INFO:serve_quik.api:Batch 0, status_code: 200
+INFO:serve_quik.api:Batch 0, status_code: 200
+INFO:serve_quik.api:Batch 0, status_code: 200
+INFO:serve_quik.api:Batch 0, status_code: 200
+INFO:serve_quik.api:Batch 0, status_code: 200
+INFO:serve_quik.api:Batch 0, status_code: 200
+INFO:serve_quik.api:Batch 0, status_code: 200
 >>> print(res)
                                        translation
 0                            The mouth is a curse.

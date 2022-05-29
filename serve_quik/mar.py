@@ -1,5 +1,6 @@
 from pathlib import Path
-from pytorch_quik import hugging, io, utils
+import hugging_quik as hq
+from serve_quik import utils
 from typing import List, Optional, OrderedDict, KeysView
 from argparse import Namespace
 import shlex
@@ -46,8 +47,8 @@ def save_setup_config(
     """
     kwargs = getattr(args, "kwargs", {})
     model_type = getattr(args, "model_type", "bert")
-    serve_config = hugging.model_info(model_type, labels, kwargs)
-    io.json_write(serve_path, "setup_config.json", serve_config)
+    serve_config = hq.model.model_info(model_type, labels, kwargs)
+    hq.io.json_write(serve_path, "setup_config.json", serve_config)
 
 
 def save_index_to_name(serve_path: str, indexed_labels: OrderedDict[int, str]):
@@ -57,7 +58,7 @@ def save_index_to_name(serve_path: str, indexed_labels: OrderedDict[int, str]):
         serve_path (str): The directory to store the sample.
         indexed_labels (OrderedDict[str, int]): the target labels with indexes.
     """
-    io.json_write(serve_path, "index_to_name.json", indexed_labels)
+    hq.io.json_write(serve_path, "index_to_name.json", indexed_labels)
 
 
 def save_sample(serve_path):
@@ -68,7 +69,7 @@ def save_sample(serve_path):
     """
     sample = ["Great company with fast support"]
     sample = utils.txt_format(sample)
-    io.json_write(serve_path, "sample_text.json", sample)
+    hq.io.json_write(serve_path, "sample_text.json", sample)
 
 
 def copy_handler(model_dir: Path, handler_path: Optional[Path] = None):

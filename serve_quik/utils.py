@@ -4,7 +4,7 @@ import socket
 from pathlib import Path
 import logging
 import sys
-from pytorch_quik import hugging
+import hugging_quik as hq
 
 logging.basicConfig(stream=sys.stdout)
 logger = logging.getLogger(__name__)
@@ -38,7 +38,7 @@ def set_serve_dir(project_name: str) -> Path:
 def set_model_dir(
     serve_dir: Path, model_type: str, kwargs: Dict[str, str]
 ) -> Path:
-    model_name = hugging.model_info(model_type, kwargs=kwargs)["model_name"]
+    model_name = hq.model.model_info(model_type, kwargs=kwargs)["model_name"]
     model_name = model_name.split("/")[-1]
     model_dir = serve_dir.joinpath(model_name)
     try:

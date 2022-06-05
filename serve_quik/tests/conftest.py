@@ -4,12 +4,14 @@ from serve_quik import arg
 import pandas as pd
 import json
 from collections import OrderedDict
+from os import getenv
 import sys
 
-# bd = Path("/workspaces/rdp-vscode-devcontainer/pytorch-quik")
-# TESTDIR = bd.joinpath("pytorch_quik", "tests")
+# bd = Path("/workspaces/rdp-vscode-devcontainer/serve-quik")
+# TESTDIR = bd.joinpath("serve_quik", "tests")
 TESTDIR = Path(__file__).parent
 SAMPLE = TESTDIR.joinpath("sample_data.json")
+ENDPOINT_URL = getenv("ENDPOINT_URL", "https://localhost:5000")
 
 
 @pytest.fixture
@@ -17,6 +19,7 @@ def args():
     """sample args namespace"""
     sys.argv = ["-p", "my_project"]
     args = arg.parse_args(sys.argv)
+    args.url = ENDPOINT_URL
     return args
 
 
@@ -35,5 +38,3 @@ def sample_data():
     with open(SAMPLE) as f:
         df = pd.DataFrame(json.load(f))
     return df
-
-

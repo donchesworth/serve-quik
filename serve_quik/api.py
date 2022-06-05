@@ -8,7 +8,6 @@ from multiprocessing.connection import Connection
 import pandas as pd
 import numpy as np
 from math import ceil
-from pandas.io.json import json_normalize
 import logging
 import sys
 

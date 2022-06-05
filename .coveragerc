@@ -1,0 +1,4 @@
+[run]
+source = serve_quik
+omit =
+    *tests*

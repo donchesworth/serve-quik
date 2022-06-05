@@ -123,7 +123,7 @@ def build_extra_files(
         all serve files. Defaults to None.
     """
     if serve_path is None:
-        serve_path = io.id_str("state_dict", args).parent.joinpath("serve")
+        serve_path = Path.cwd().joinpath("serve")
     serve_path.mkdir(parents=True, exist_ok=True)
     save_setup_config(serve_path, indexed_labels.keys(), args)
     save_index_to_name(serve_path, indexed_labels)

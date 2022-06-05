@@ -2,3 +2,5 @@
 source = serve_quik
 omit =
     *tests*
+    container/*
+    handler/*

@@ -1,5 +1,4 @@
 from pathlib import Path
-import pytorch_quik as pq
 from types import SimpleNamespace
 from serve_quik import mar
 

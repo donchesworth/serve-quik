@@ -1,4 +1,4 @@
-import pytorch_quik as pq
+import serve_quik as sq
 import pandas as pd
 import numpy as np
 
@@ -28,7 +28,7 @@ res = pd.DataFrame()
 for key, value in text_dict.items():
     x = np.array(value, dtype='object')
     url = f"http://deepshadow.gsslab.rdu2.redhat.com:8180/predictions/{key}"
-    sr = pq.api.ServeRequest(x, 2, url)
+    sr = sq.api.ServeRequest(x, 2, url)
     df = sr.batch_inference()
     res = pd.concat([res, df])
 

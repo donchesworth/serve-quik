@@ -1,3 +1,4 @@
+hugging-quik
 torchserve
 torch-model-archiver
 ruamel.yaml

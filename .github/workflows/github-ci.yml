@@ -34,23 +34,23 @@ jobs:
           tags: ghcr.io/donchesworth/serve-quik-test:latest
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}          
-  # container_run:
-  #   runs-on: ubuntu-latest
-  #   needs: docker_build
-  #   container:
-  #     image: ghcr.io/donchesworth/serve-quik-test:latest
-  #     credentials:
-  #       username: ${{ github.repository_owner }}
-  #       password: ${{ secrets.CR_PAT }}
-  #   steps:
-  #     - name: Run container
-  #       run: |
-  #         /opt/pq/entrypoint.sh
-  #     - name: Upload coverage
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: coverage-reports
-  #         path: /opt/pq/coverage*
+  container_run:
+    runs-on: ubuntu-latest
+    needs: docker_build
+    container:
+      image: ghcr.io/donchesworth/serve-quik-test:latest
+      credentials:
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.CR_PAT }}
+    steps:
+      - name: Run container
+        run: |
+          /opt/sq/entrypoint.sh
+      - name: Upload coverage
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-reports
+          path: /opt/sq/coverage*
   # coverage_upload:
   #   runs-on: ubuntu-latest
   #   needs: container_run

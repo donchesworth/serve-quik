@@ -17,7 +17,7 @@ ENDPOINT_URL = getenv("ENDPOINT_URL", "https://localhost:5000")
 @pytest.fixture
 def args():
     """sample args namespace"""
-    sys.argv = ["-p", "my_project"]
+    sys.argv = ["-p", "my_project", "-mt", "marianmt"]
     args = arg.parse_args(sys.argv)
     args.url = ENDPOINT_URL
     return args

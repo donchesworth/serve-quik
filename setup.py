@@ -13,7 +13,7 @@ install_requires = [x.strip() for x in all_reqs if "git+" not in x]
 
 setup(
     name="serve-quik",
-    version="0.0.1",
+    version="0.0.2",
     description="functions to make working with TorchServe quik-er",
     long_description=README,
     long_description_content_type="text/markdown",

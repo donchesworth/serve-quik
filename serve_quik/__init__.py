@@ -7,7 +7,7 @@ __all__ = [
     "mar",
     "utils",
 ]
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 for submodule in __all__:
     import_module(f"serve_quik.{submodule}")

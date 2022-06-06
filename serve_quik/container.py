@@ -11,7 +11,7 @@ logging.basicConfig(stream=sys.stdout)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-CONTAINER_DIR = Path(__file__).parent.joinpath("container")
+CONTAINER_DIR = Path(__file__).parent.joinpath("container").resolve()
 
 
 @dataclass
@@ -49,6 +49,9 @@ def build_dot_env(serve_dir: Path):
 
 
 def start_container(serve_dir):
+    logger.info(f"building a container with project-directory {serve_dir}")
+    logger.info(f"running command in the directory {CONTAINER_DIR}")
+    
     shutil.rmtree(serve_dir.joinpath("tmp"), ignore_errors=True)
     cmd = f"""docker-compose
         --project-directory="{serve_dir}"

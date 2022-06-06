@@ -19,14 +19,15 @@ PORT_SETS = list(zip(
 
 
 def file_path():
-    return Path(__file__)
+    return Path(__file__).resolve()
 
 
 def set_serve_dir(project_name: str) -> Path:
-    base_dir = Path(__file__).parents[1]
+    base_dir = file_path().parents[1]
     serve_dir = base_dir.joinpath("deployments", project_name)
     try:
         serve_dir.mkdir()
+        logger.info(f"serve directory created in {serve_dir}")
     except FileExistsError as e:
         logger.info(
             f"{e.strerror}: the {project_name} project folder "
@@ -43,6 +44,7 @@ def set_model_dir(
     model_dir = serve_dir.joinpath(model_name)
     try:
         model_dir.mkdir()
+        logger.info(f"model directory created in {model_dir}")
     except FileExistsError as e:
         logger.info(
             f"{e.strerror}: the {model_name} model folder "

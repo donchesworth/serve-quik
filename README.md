@@ -6,10 +6,10 @@ For creating torch archived transformer models and TorchServe containers (much q
 
 ### Quick Start
 
-The process of building a torch model archive, building a torch serve container, determining the appropriate ports, and testing your container can be tedious, so I tried to create an automated process for all of this. Most of my automation is centered around MarianMT models, but can be used for other models (I use it for a BERT model). For instance, to build and deploy a container with some MarianMT models that will translate from Japanese, German, and Spanish to English, you could run the following:
+The process of building a torch model archive, building a torch serve container, determining the appropriate ports, and testing your container can be tedious, so I tried to create an automated process for all of this. Most of my automation is centered around MarianMT models, but can be used for other models (I use it for a BERT model). For instance, to build and deploy a container with some MarianMT models that will translate from Brazilian Portuguese, Chinese, French, German, Japanese, Korean, and Spanish to English, you could run the following:
 
 ``` bash
-python main.py -p "text-translate" -mt marianmt -src ja de es fr bzs zh ko
+python serve-quik -p "text-translate" -mt marianmt -src ja de es fr bzs zh ko
 ```
 
 Not only is everything set up, but the container is up and running on the server:
